@@ -4,8 +4,8 @@ A full-stack project: upload a resume PDF, AI analyzes it against a target
 role, and returns a score + strengths + missing skills + suggestions —
 shown in a clean React dashboard.
 
-**Stack:** React (Vite) + Tailwind CSS on the frontend, Flask + API
-(Llama 3.3) on the backend.
+**Stack:** React (Vite) + Tailwind CSS on the frontend, Flask + an LLM API
+(Llama 3.3, via Groq) on the backend.
 
 ---
 
@@ -14,7 +14,7 @@ shown in a clean React dashboard.
 1. You drag-drop a resume PDF into the React app.
 2. React sends the file to a Flask API endpoint (`/api/analyze`).
 3. Flask extracts the text from the PDF (using PyPDF2).
-4. Flask sends that text to an LLM (Groq's free Llama 3.3 API) with a
+4. Flask sends that text to an LLM (Llama 3.3, via the Groq API) with a
    prompt asking it to act like a recruiter and return structured JSON.
 5. Flask sends that JSON back to React, which renders it as a dashboard.
 
@@ -39,7 +39,7 @@ these are illustrative placeholders, not real user submissions.
   client-side (no server round-trip).
 - **About section** — before you deploy this, open `App.jsx`, find
   `AboutSection`, and replace the placeholder GitHub/LinkedIn URLs
-  (`https://github.com/mukeshdevx`, `https://linkedin.com/in/mukeshdevx`)
+  (`https://github.com/your-username`, `https://linkedin.com/in/your-username`)
   with your real profile links.
 - **Honest stats banner** — replaced fake usage numbers ("10,000+
   resumes analyzed") with actual, truthful facts about the project
@@ -53,7 +53,7 @@ these are illustrative placeholders, not real user submissions.
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  
+source venv/bin/activate      # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
@@ -93,13 +93,13 @@ Open that URL, upload a PDF resume, pick a target role, and click
 ai-resume-analyzer/
 ├── backend/
 │   ├── app.py                    # Flask entry point — creates app, registers routes
-│   ├── config.py                 # env loading + Groq client setup
+│   ├── config.py                 # env loading + AI client setup
 │   ├── requirements.txt
 │   ├── .env.example
 │   ├── services/
 │   │   ├── pdf_service.py        # PDF text extraction
 │   │   ├── prompts.py            # All AI prompt-building logic
-│   │   └── ai_service.py         # Wraps the Groq API calls
+│   │   └── ai_service.py         # Wraps the LLM API calls
 │   └── routes/
 │       └── resume_routes.py      # /api/analyze, /api/fix-resume, /api/health
 └── frontend/
@@ -141,3 +141,18 @@ ai-resume-analyzer/
 - **Clean separation**: React only talks to your own API — it never
   touches the AI key directly, which is how it should be done in
   production too.
+
+## How to talk about it in an interview
+
+"I built a tool that lets users upload their resume and get instant AI
+feedback. On the frontend I handled file uploads with drag-and-drop,
+loading and error states, and a results dashboard. On the backend, I
+used Flask to extract text from the PDF and pass it to an LLM with a
+prompt engineered to return structured JSON, which the frontend then
+renders."
+
+## Possible upgrades (if you want to go further later)
+
+- Deploy frontend to Vercel, backend to Render/Railway
+- Add a "compare against job description" mode (paste a JD, get a match %)
+- Store past analyses (would need a database — skip for now as a fresher)

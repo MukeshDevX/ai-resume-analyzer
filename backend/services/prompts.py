@@ -17,9 +17,7 @@ def build_analysis_prompt(resume_text, job_description=None):
 
     return f"""
 You are an ATS (Applicant Tracking System) simulator combined with an
-experienced technical recruiter, reviewing a candidate's resume. Be
-precise and consistent — base every score strictly on evidence in the
-resume text, not assumptions.
+experienced technical recruiter, reviewing a candidate's resume.
 
 Resume text:
 \"\"\"
@@ -28,31 +26,51 @@ Resume text:
 
 {role_context}
 
-Before scoring, work through this internally (do not include this
-reasoning in your output):
-1. List the key skills/keywords the target role or job description
-   requires.
-2. Check which of those actually appear in the resume text (exact or
-   close variants only — do not credit a skill that isn't mentioned).
-3. Judge structure: clear section headings, consistent dates, no
-   parsing-breaking formatting (tables, columns, graphics).
-4. Judge content quality: quantified achievements, action verbs,
-   specificity vs vague filler.
+Your score MUST be computed from specific evidence in THIS resume, not
+a generic impression. Two different resumes should almost never land
+on the same score unless they are genuinely, specifically similar.
+Follow this exact procedure and do not skip steps:
 
-Scoring rubric:
-- ats_score (0-100): percentage of required keywords/skills actually
-  present, weighted by relevance. A resume missing several core
-  requirements should score below 50; a strong match above 80.
-- quality_score (0-100): independent of keyword match — judges writing
-  quality, structure, and impact regardless of role fit.
+STEP 1 — List 6 to 10 concrete keywords/skills/technologies that the
+target role or job description requires.
 
-Analyze this resume and respond with ONLY valid JSON (no markdown, no
-extra text) in exactly this shape:
+STEP 2 — For each one, check the resume text and mark it PRESENT or
+MISSING. Only mark PRESENT if it is actually stated or clearly implied
+by a project/experience described — do not give credit for skills
+that aren't mentioned anywhere.
+
+STEP 3 — Compute ats_score:
+  base = round(100 * present_count / total_count_from_step_1)
+  Then subtract further points if structure would break ATS parsing:
+  -10 if there are no clear section headings (Education/Experience/etc.)
+  -10 if formatting likely uses tables/columns/graphics that ATS
+      parsers commonly fail on
+  Floor the result at 0.
+
+STEP 4 — Compute quality_score starting at 100, and subtract:
+  -20 if there are zero quantified achievements (no numbers/metrics/
+      percentages anywhere in experience or project bullets)
+  -15 if most bullets start with weak phrasing ("responsible for",
+      "worked on", "helped with") instead of strong action verbs
+  -10 if sections/dates are inconsistent or hard to follow
+  -10 if bullets are vague/generic rather than specific about what was
+      built or achieved
+  -5 for each other genuine writing-quality issue you find (list what
+      it is in "improvements")
+  Do not output a quality_score above 85 unless you found at least 2
+  genuinely specific, quantified achievements in the resume.
+
+Do not include this step-by-step work in your output — only the final
+JSON. But the numbers in that JSON must be the actual result of doing
+these steps, not a rounded-off guess.
+
+Respond with ONLY valid JSON (no markdown, no extra text) in exactly
+this shape:
 
 {{
   "candidate_name": "<name extracted from the resume, or empty string>",
-  "ats_score": <number 0-100, how well keywords/structure match the inferred role or job description>,
-  "quality_score": <number 0-100, overall resume quality: clarity, impact, structure>,
+  "ats_score": <number 0-100, computed per STEP 3>,
+  "quality_score": <number 0-100, computed per STEP 4>,
   "strengths": ["point 1", "point 2", "point 3"],
   "missing_keywords": ["keyword 1", "keyword 2", "keyword 3"],
   "improvements": [
@@ -69,10 +87,8 @@ Include 4 to 6 items in "improvements", covering a mix of categories.
 """
 
 
-# Reference LaTeX resume template (the well-known "Taki's Resume" style,
-# as provided by the user). The AI is instructed to keep this exact
-# structure/preamble/custom-commands and only swap in the real
-# candidate's truthful content.
+# Reference LaTeX resume template (the well-known "Jake's Resume" style.
+
 LATEX_TEMPLATE = r"""
 \documentclass[letterpaper,11pt]{article}
 \usepackage{latexsym}

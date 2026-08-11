@@ -65,7 +65,7 @@ export default function Hero({ result, setResult }) {
     setJobDescription("");
   };
 
-  if (result) return null; // results view takes over instead
+  if (result) return null; 
 
   return (
     <section className="max-w-3xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-10 text-center">
@@ -85,7 +85,7 @@ export default function Hero({ result, setResult }) {
       </div>
 
       {/* Tool card */}
-      <div className="mt-8 sm:mt-10 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm p-4 sm:p-6 text-left">
+      <div className="animate-card-in mt-8 sm:mt-10 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm p-4 sm:p-6 text-left">
         <Stepper step={step} />
 
         {step !== 3 || !loading ? (

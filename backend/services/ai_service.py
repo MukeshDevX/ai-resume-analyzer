@@ -8,15 +8,16 @@ def analyze_resume_text(resume_text, job_description=None):
     response = client.chat.completions.create(
         model=MODEL_NAME,
         messages=[{"role": "user", "content": prompt}],
-        temperature=0.3,
+        temperature=0.15,
     )
     raw_output = response.choices[0].message.content.strip()
 
-    # api sometimes wraps the json in ```json ... ``` anyway
+    # the API sometimes wraps the json in ```json ... ``` anyway
+    
     raw_output = raw_output.replace("```json", "").replace("```", "").strip()
 
     result = json.loads(raw_output)
-    result["resume_text"] = resume_text  # needed later for auto-fix
+    result["resume_text"] = resume_text 
     return result
 
 

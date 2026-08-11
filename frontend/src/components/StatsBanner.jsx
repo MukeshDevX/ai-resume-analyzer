@@ -2,7 +2,7 @@ export default function StatsBanner() {
   const facts = [
     { label: "Personal Project", detail: "Not a commercial product" },
     { label: "Open Source", detail: "Code available on GitHub" },
-    { label: "AI-Powered", detail: "Groq · Llama 3.3" },
+    { label: "AI-Powered", detail: "Llama 3.3 LLM" },
   ];
   return (
     <section className="max-w-5xl mx-auto px-4 sm:px-6 mb-16">

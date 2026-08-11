@@ -4,7 +4,6 @@ import Hero from "./components/Hero";
 import Results from "./components/Results";
 import WhySection from "./components/WhySection";
 import StatsBanner from "./components/StatsBanner";
-import AboutSection from "./components/AboutSection";
 import Footer from "./components/Footer";
 
 export default function App() {
@@ -14,7 +13,7 @@ export default function App() {
     const saved = localStorage.getItem("theme");
     if (saved) return saved === "dark";
     return window.matchMedia("(prefers-color-scheme: dark)").matches;
-  });
+    ;
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDark);
@@ -36,7 +35,6 @@ export default function App() {
         <>
           <WhySection />
           <StatsBanner />
-          <AboutSection />
         </>
       )}
       <Footer />

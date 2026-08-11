@@ -2,7 +2,7 @@ import { Target, Instagram, Sun, Moon } from "lucide-react";
 
 export default function Header({ isDark, setIsDark, onLogoClick }) {
   return (
-    <header className="border-b border-gray-100 dark:border-gray-800">
+    <header>
       <div className="px-4 sm:px-6 md:px-10 lg:px-16 py-4 flex items-center justify-between">
         <button onClick={onLogoClick} className="flex items-center gap-2" aria-label="Go to home">
           <div className="w-8 h-8 rounded-lg bg-brand-500 flex items-center justify-center">
@@ -13,7 +13,7 @@ export default function Header({ isDark, setIsDark, onLogoClick }) {
         <div className="flex items-center gap-2 sm:gap-3">
           <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
           <a
-            href="https://instagram.com/taki.asf"
+            href="https://instagram.com/asf.taki"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-white bg-gray-900 dark:bg-white dark:text-gray-900 rounded-full px-3 sm:px-4 py-1.5 sm:py-2 hover:opacity-90 transition-opacity shrink-0"
