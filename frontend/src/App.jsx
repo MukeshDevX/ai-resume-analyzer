@@ -35,9 +35,9 @@ export default function App() {
         <>
           <WhySection />
           <StatsBanner />
+          <Footer />
         </>
       )}
-      <Footer />
     </div>
   );
 }
