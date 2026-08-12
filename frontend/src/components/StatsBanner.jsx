@@ -1,6 +1,6 @@
 export default function StatsBanner() {
   const facts = [
-    { label: "2609+", detail: "Resumes Analyzed" },
+    { label: "2,609+", detail: "Resumes Analyzed" },
     { label: "85%", detail: "Avg Score Improvement" },
     { label: "4.9/5", detail: "User Rating" },
   ];
