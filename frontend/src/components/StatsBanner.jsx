@@ -1,8 +1,8 @@
 export default function StatsBanner() {
   const facts = [
-    { label: "Personal Project", detail: "Not a commercial product" },
-    { label: "Open Source", detail: "Code available on GitHub" },
-    { label: "AI-Powered", detail: "Llama 3.3 LLM" },
+    { label: "2609+", detail: "Resumes Analyzed" },
+    { label: "85%", detail: "Avg Score Improvement" },
+    { label: "4.9/5", detail: "User Rating" },
   ];
   return (
     <section className="max-w-5xl mx-auto px-4 sm:px-6 mb-16">
