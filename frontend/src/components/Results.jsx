@@ -23,7 +23,7 @@ export default function Results({ result, onReset }) {
       const res = await fetch(FIX_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resume_text, job_description, improvements }),
+        body: JSON.stringify({ resume_text, job_description, improvements, missing_keywords }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Something went wrong.");

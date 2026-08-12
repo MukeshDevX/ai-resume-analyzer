@@ -43,12 +43,13 @@ def fix_resume():
     resume_text = (data.get("resume_text") or "").strip()
     job_description = (data.get("job_description") or "").strip() or None
     improvements = data.get("improvements") or []
+    missing_keywords = data.get("missing_keywords") or []
 
     if len(resume_text) < 50:
         return jsonify({"error": "Missing resume text to fix. Please re-analyze your resume first."}), 400
 
     try:
-        latex_code = generate_latex_resume(resume_text, job_description, improvements)
+        latex_code = generate_latex_resume(resume_text, job_description, improvements, missing_keywords)
         return jsonify({"latex_code": latex_code})
     except Exception as e:
         return jsonify({"error": f"AI request failed: {str(e)}"}), 500

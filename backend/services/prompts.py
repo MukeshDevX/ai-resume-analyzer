@@ -64,6 +64,17 @@ Do not include this step-by-step work in your output — only the final
 JSON. But the numbers in that JSON must be the actual result of doing
 these steps, not a rounded-off guess.
 
+Grade like a strict, critical recruiter who rejects most resumes they
+see — not a lenient one who wants everyone to feel good. Do not round
+scores up to "nice" numbers (70, 75, 80) out of habit; use the exact
+computed value from the steps above, even if it's an odd number like
+63 or 78.
+
+Before finalizing, self-check: the "missing_keywords" array must list
+every keyword you marked MISSING in STEP 2 (not a random subset), and
+ats_score must mathematically match present_count/total_count from
+STEP 1-2 (adjusted per STEP 3) — if it doesn't, recompute it.
+
 Respond with ONLY valid JSON (no markdown, no extra text) in exactly
 this shape:
 
@@ -87,8 +98,10 @@ Include 4 to 6 items in "improvements", covering a mix of categories.
 """
 
 
-# Reference LaTeX resume template (the well-known "Jake's Resume" style.
-
+# Reference LaTeX resume template (the well-known "Jake's Resume" style,
+# as provided by the user). The AI is instructed to keep this exact
+# structure/preamble/custom-commands and only swap in the real
+# candidate's truthful content.
 LATEX_TEMPLATE = r"""
 \documentclass[letterpaper,11pt]{article}
 \usepackage{latexsym}
@@ -208,7 +221,7 @@ LATEX_TEMPLATE = r"""
 """
 
 
-def build_latex_prompt(resume_text, job_description=None, improvements=None):
+def build_latex_prompt(resume_text, job_description=None, improvements=None, missing_keywords=None):
     """Instructs the model to reproduce the reference LaTeX template's
     structure/macros exactly, substituting in the real candidate's
     truthful content in place of the placeholder example content."""
@@ -221,11 +234,20 @@ def build_latex_prompt(resume_text, job_description=None, improvements=None):
             "resume's own content.\n"
         )
 
-    issues = "; ".join(
-        f"{imp.get('title', '')}: {imp.get('description', '')}"
-        for imp in (improvements or [])
-        if imp.get("title")
-    ) or "General ATS-friendliness and clarity improvements."
+    checklist_lines = []
+    for imp in (improvements or []):
+        if imp.get("title"):
+            checklist_lines.append(
+                f"- [{imp.get('category', 'General')}] {imp.get('title')}: "
+                f"{imp.get('description', '')} (why: {imp.get('impact', '')})"
+            )
+    checklist = "\n".join(checklist_lines) or "- General ATS-friendliness and clarity improvements."
+
+    missing_kw_line = (
+        ", ".join(missing_keywords)
+        if missing_keywords
+        else "none identified"
+    )
 
     prompt = (
         "You are an expert LaTeX resume writer.\n\n"
@@ -236,7 +258,17 @@ def build_latex_prompt(resume_text, job_description=None, improvements=None):
         "Real candidate's resume content to use instead of the placeholders:\n"
         '"""\n' + resume_text + '\n"""\n\n'
         + jd_block + "\n"
-        "Known issues to address:\n" + issues + "\n\n"
+        "This resume was already analyzed and these specific issues were "
+        "found. You MUST address every single one below in the rewrite — "
+        "go through the list one by one and make sure each is fixed, not "
+        "just loosely inspired by it:\n" + checklist + "\n\n"
+        "Missing keywords identified from the target role/job description: "
+        + missing_kw_line + "\n"
+        "For each of these, check the candidate's actual experience/projects "
+        "again — if their real work genuinely involved that skill/tool even "
+        "if the original resume didn't name it explicitly, use the correct "
+        "terminology now. If their real work does NOT involve it at all, "
+        "leave it out — never fabricate a skill just to check a keyword box.\n\n"
         "Strict rules:\n"
         "- Keep the LaTeX preamble (everything before \\begin{document}) "
         "byte-for-byte identical to the reference template.\n"
@@ -246,8 +278,6 @@ def build_latex_prompt(resume_text, job_description=None, improvements=None):
         "- Do NOT invent companies, job titles, dates, degrees, skills, "
         "or metrics that are not present in the real candidate's resume. "
         "Only rephrase, reorganize, and emphasize what is genuinely there.\n"
-        "- Only weave in a keyword from the job description if the "
-        "candidate's actual background genuinely supports it.\n"
         "- Only include a \\section (Education, Experience, Projects, "
         "Technical Skills, or others like Certifications/Research if "
         "relevant) if the real candidate's resume actually has that kind "
@@ -276,6 +306,9 @@ def build_latex_prompt(resume_text, job_description=None, improvements=None):
         "  * Do not alter the template's font sizes or spacing commands "
         "to force a fit — balance the page purely through content "
         "selection and detail level.\n"
+        "- Before finalizing, re-read the checklist above and confirm "
+        "each item is genuinely reflected in the rewritten resume — not "
+        "just implied.\n"
         "- Respond with ONLY the complete .tex file, starting from "
         "\\documentclass and ending with \\end{document}. No explanation, "
         "no markdown code fences, nothing else.\n"
