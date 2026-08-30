@@ -1,6 +1,4 @@
 backend/.env
-.env
-.env.local
 
 # Python
 backend/venv/
