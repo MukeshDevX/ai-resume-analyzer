@@ -8,9 +8,17 @@ from extensions import limiter
 resume_bp = Blueprint("resume", __name__, url_prefix="/api")
 logger = logging.getLogger(__name__)
 
-
+# Length caps as defense in depth — even though the file itself is capped
+# at 5MB, extracted text or a raw pasted job description could still be
+# unreasonably long, which just wastes tokens/cost on the AI call.
 MAX_RESUME_CHARS = 20000
 MAX_JD_CHARS = 5000
+
+# /fix-resume already ships a ~1000-token LaTeX template inside the prompt,
+# so it needs tighter caps to stay under Groq's free-tier tokens-per-minute
+# limit once the completion budget is added on top.
+MAX_RESUME_CHARS_FOR_FIX = 6000
+MAX_JD_CHARS_FOR_FIX = 1500
 
 
 @resume_bp.route("/analyze", methods=["POST"])
@@ -54,8 +62,8 @@ def analyze_resume():
 @limiter.limit("10 per hour")
 def fix_resume():
     data = request.get_json(silent=True) or {}
-    resume_text = (data.get("resume_text") or "").strip()[:MAX_RESUME_CHARS]
-    job_description = (data.get("job_description") or "").strip()[:MAX_JD_CHARS] or None
+    resume_text = (data.get("resume_text") or "").strip()[:MAX_RESUME_CHARS_FOR_FIX]
+    job_description = (data.get("job_description") or "").strip()[:MAX_JD_CHARS_FOR_FIX] or None
     improvements = data.get("improvements") or []
     missing_keywords = data.get("missing_keywords") or []
 

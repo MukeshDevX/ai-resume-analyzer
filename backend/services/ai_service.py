@@ -27,7 +27,7 @@ def generate_latex_resume(resume_text, job_description=None, improvements=None, 
         model=MODEL_NAME,
         messages=[{"role": "user", "content": prompt}],
         temperature=0.2,
-        max_tokens=6000,
+        max_tokens=3000,
     )
     choice = response.choices[0]
     latex_code = choice.message.content.strip()
