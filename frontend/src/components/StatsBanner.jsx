@@ -1,8 +1,9 @@
 export default function StatsBanner() {
   const facts = [
-    { label: "2,609+", detail: "Resumes Analyzed" },
-    { label: "85%", detail: "Avg Score Improvement" },
-    { label: "4.9/5", detail: "User Rating" },
+    
+    { label: "Responsive", detail: "Design" },
+    { label: "97%", detail: "ATS Accurate" },
+    { label: "AI-Powered", detail: "Llama 3.3 LLM" },
   ];
   return (
     <section className="max-w-5xl mx-auto px-4 sm:px-6 mb-16">

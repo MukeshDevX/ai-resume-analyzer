@@ -8,12 +8,12 @@ export default function Header({ isDark, setIsDark, onLogoClick }) {
           <div className="w-8 h-8 rounded-lg bg-brand-500 flex items-center justify-center">
             <Target className="w-4 h-4 text-white" />
           </div>
-          <span className="font-bold text-base sm:text-lg tracking-tight">AI Resume Analyzer</span>
+         <span className="hidden sm:inline font-bold text-base sm:text-lg tracking-tight">AI Resume Analyzer</span>
         </button>
         <div className="flex items-center gap-2 sm:gap-3">
           <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
           <a
-            href="https://instagram.com/asf.taki"
+            href="https://instagram.com/taki.asf/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-white bg-gray-900 dark:bg-white dark:text-gray-900 rounded-full px-3 sm:px-4 py-1.5 sm:py-2 hover:opacity-90 transition-opacity shrink-0"

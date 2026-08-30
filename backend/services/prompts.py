@@ -1,7 +1,4 @@
 def build_analysis_prompt(resume_text, job_description=None):
-    """Builds the instruction we send to the LLM for scoring a resume.
-    Asking for JSON output makes the response easy to parse and display
-    in the React UI."""
     if job_description:
         role_context = (
             f'Job description to match against:\n"""\n{job_description}\n"""\n'
@@ -228,9 +225,6 @@ LATEX_TEMPLATE = r"""
 
 
 def build_latex_prompt(resume_text, job_description=None, improvements=None, missing_keywords=None):
-    """Instructs the model to reproduce the reference LaTeX template's
-    structure/macros exactly, substituting in the real candidate's
-    truthful content in place of the placeholder example content."""
     if job_description:
         jd_block = f'Target job description:\n"""\n{job_description}\n"""\n'
     else:

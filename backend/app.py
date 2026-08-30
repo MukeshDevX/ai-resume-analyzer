@@ -6,23 +6,20 @@ from extensions import limiter
 
 app = Flask(__name__)
 
-# Local dev is always allowed. Once the frontend is deployed, set
-# FRONTEND_URL in Render's environment variables to its real URL —
-# no code change needed.
+# Local dev is always allowed
+
 allowed_origins = ["http://localhost:5173"]
 frontend_url = os.getenv("FRONTEND_URL")
 if frontend_url:
     allowed_origins.append(frontend_url.strip().rstrip("/"))
 CORS(app, origins=allowed_origins)
 
-# Reject anything above 5MB before it even reaches a route (the frontend
-# already checks this, but that check is trivial to bypass by calling
 # the API directly, e.g. with curl or Postman)
+
 app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024
 
-# Without this, anyone could script repeated calls to /api/analyze or
-# /api/fix-resume and burn through the AI API quota (or run up a bill,
-# on a paid plan) — each call costs real money/quota on the AI provider.
+# Without this, anyone could script repeated calls to /api/analyze or /api/fix-resume and burn through the AI API quota.
+
 limiter.init_app(app)
 
 app.register_blueprint(resume_bp)

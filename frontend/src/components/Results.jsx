@@ -106,7 +106,7 @@ export default function Results({ result, onReset }) {
             {needsWork ? "Your resume could use some work for this role" : "Want an even sharper version?"}
           </h4>
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-            AI can rewrite your resume as ready to compile LaTeX fixing
+            AI can rewrite your resume as ready to compile LaTeX — fixing
             formatting, working in the missing keywords, and tailoring it
             to the job description you provided without inventing
             anything that isn't already true.
@@ -117,7 +117,7 @@ export default function Results({ result, onReset }) {
             disabled={fixing}
             className="mt-3 w-full sm:w-auto flex items-center justify-center gap-2 bg-brand-500 text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-brand-600 transition disabled:opacity-60"
           >
-            {fixing ? "Rewriting your resume…" : <>Auto-Fix My Resume with AI <ArrowRight className="w-4 h-4" /></>}
+            {fixing ? "Rewriting your resume…" : <>Auto-Fix My Resume <ArrowRight className="w-4 h-4" /></>}
           </button>
         </div>
       ) : (

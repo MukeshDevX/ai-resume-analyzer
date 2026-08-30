@@ -1,14 +1,14 @@
 import json
+import logging
 from flask import Blueprint, request, jsonify
 from services.pdf_service import extract_text_from_pdf
 from services.ai_service import analyze_resume_text, generate_latex_resume
 from extensions import limiter
 
 resume_bp = Blueprint("resume", __name__, url_prefix="/api")
+logger = logging.getLogger(__name__)
 
-# Length caps as defense in depth — even though the file itself is capped
-# at 5MB, extracted text or a raw pasted job description could still be
-# unreasonably long, which just wastes tokens/cost on the AI call.
+
 MAX_RESUME_CHARS = 20000
 MAX_JD_CHARS = 5000
 
@@ -30,8 +30,9 @@ def analyze_resume():
 
     try:
         resume_text = extract_text_from_pdf(file)
-    except Exception as e:
-        return jsonify({"error": f"Could not read PDF: {str(e)}"}), 400
+    except Exception:
+        logger.exception("Failed to extract text from uploaded PDF")
+        return jsonify({"error": "Could not read this PDF. Please try a different file."}), 400
 
     if len(resume_text) < 50:
         return jsonify({"error": "Couldn't extract enough text from this PDF"}), 400
@@ -42,9 +43,11 @@ def analyze_resume():
         result = analyze_resume_text(resume_text, job_description)
         return jsonify(result)
     except json.JSONDecodeError:
+        logger.exception("AI response was not valid JSON")
         return jsonify({"error": "AI response could not be parsed. Please try again."}), 500
-    except Exception as e:
-        return jsonify({"error": f"AI request failed: {str(e)}"}), 500
+    except Exception:
+        logger.exception("Resume analysis failed")
+        return jsonify({"error": "Something went wrong analyzing this resume. Please try again."}), 500
 
 
 @resume_bp.route("/fix-resume", methods=["POST"])
@@ -62,8 +65,9 @@ def fix_resume():
     try:
         latex_code = generate_latex_resume(resume_text, job_description, improvements, missing_keywords)
         return jsonify({"latex_code": latex_code})
-    except Exception as e:
-        return jsonify({"error": f"AI request failed: {str(e)}"}), 500
+    except Exception:
+        logger.exception("Resume fix-up failed")
+        return jsonify({"error": "Something went wrong generating your resume. Please try again."}), 500
 
 
 @resume_bp.route("/health", methods=["GET"])

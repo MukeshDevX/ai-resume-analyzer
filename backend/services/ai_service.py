@@ -13,6 +13,7 @@ def analyze_resume_text(resume_text, job_description=None):
     raw_output = response.choices[0].message.content.strip()
 
     # the API sometimes wraps the json in ```json ... ``` anyway
+    
     raw_output = raw_output.replace("```json", "").replace("```", "").strip()
 
     result = json.loads(raw_output)

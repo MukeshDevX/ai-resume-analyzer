@@ -1,10 +1,10 @@
 import os
 from dotenv import load_dotenv
-from groq import Groq
+from openai import OpenAI
 
 load_dotenv()
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-client = Groq(api_key=GROQ_API_KEY)
+AI_API_KEY = os.getenv("AI_API_KEY")
+client = OpenAI(api_key=AI_API_KEY, base_url="https://api.groq.com/openai/v1")
 
-MODEL_NAME = "llama-3.3-70b-versatile"
+MODEL_NAME = "openai/gpt-oss-120b"

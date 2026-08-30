@@ -65,7 +65,7 @@ export default function Hero({ result, setResult }) {
     setJobDescription("");
   };
 
-  if (result) return null; 
+  if (result) return null; // results
 
   return (
     <section className="max-w-3xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-10 text-center">
@@ -81,7 +81,7 @@ export default function Hero({ result, setResult }) {
       <div className="flex items-center justify-center gap-x-3 sm:gap-x-6 gap-y-2 mt-5 text-xs sm:text-sm text-gray-500 dark:text-gray-400 flex-wrap">
         <span className="flex items-center gap-1.5"><Zap className="w-4 h-4 text-brand-500 shrink-0" /> Takes 30 seconds</span>
         <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-600 shrink-0" /> 100% Free</span>
-        <span className="flex items-center gap-1.5"><Star className="w-4 h-4 text-brand-500 fill-brand-500 shrink-0" /> 2,609+ resumes analyzed </span>
+        <span className="flex items-center gap-1.5"><Star className="w-4 h-4 text-brand-500 fill-brand-500 shrink-0" /> 2,609+ resumes analyzed</span>
       </div>
 
       {/* Tool card */}
